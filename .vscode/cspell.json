@@ -55,6 +55,7 @@
     "sdk/core/azure-core-tracing-opencensus/**",
     "sdk/core/azure-core-tracing-opentelemetry/**",
     "sdk/core/azure-servicemanagement-legacy/**",
+    "sdk/core/generic/**",
     "sdk/digitaltwins/azure-digitaltwins-core/**",
     "sdk/eventhub/azure-eventhub-checkpointstoretable/**",
     "sdk/eventhub/azure-eventhub-checkpointstoreblob-aio/**",
@@ -501,7 +502,7 @@
       "words": [
         "wammsa"
       ]
-    },    
+    },
     {
       "filename": "sdk/tables/azure-data-tables/tests/**/*.py",
       "words": [
