@@ -275,7 +275,6 @@ class ODataV4Format:
         return error_str
 
 
-
 class ServiceRequestError(AzureError):
     """An error occurred while attempt to make a request to the service.
     No request was sent.

@@ -35,7 +35,6 @@ __all__ = ["ItemPaged", "PageIterator"]
 
 
 class PageIterator(GenericPageIterator):
-
     def __next__(self) -> Iterator[ReturnType]:
         if self.continuation_token is None and self._did_a_call_already:
             raise StopIteration("End of paging")
