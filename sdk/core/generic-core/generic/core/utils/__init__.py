@@ -30,5 +30,10 @@ building on top of `generic-core`.
 
 """
 from ._utils import case_insensitive_dict, CaseInsensitiveDict
+from ._enum_meta import CaseInsensitiveEnumMeta
 
-__all__ = ["case_insensitive_dict", "CaseInsensitiveDict"]
+__all__ = [
+    "case_insensitive_dict",
+    "CaseInsensitiveDict",
+    "CaseInsensitiveEnumMeta",
+]

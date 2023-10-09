@@ -43,7 +43,7 @@ from ..exceptions import (
 
 from ._base import HTTPPolicy, RequestHistory
 from . import _utils
-from ..runtime._enum_meta import CaseInsensitiveEnumMeta
+from ..utils import CaseInsensitiveEnumMeta
 
 HTTPResponseType = TypeVar("HTTPResponseType", bound=HttpResponse)
 AllHttpResponseType = TypeVar("AllHttpResponseType", HttpResponse, AsyncHttpResponse)

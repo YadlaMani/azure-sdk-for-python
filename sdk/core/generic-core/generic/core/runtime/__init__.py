@@ -26,10 +26,8 @@
 
 from ._pipeline_client import PipelineClient
 from ._pipeline_client_async import AsyncPipelineClient
-from ._enum_meta import CaseInsensitiveEnumMeta
 
 __all__ = [
     "PipelineClient",
-    "CaseInsensitiveEnumMeta",
     "AsyncPipelineClient",
 ]

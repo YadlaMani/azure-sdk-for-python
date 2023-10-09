@@ -35,7 +35,7 @@ class CaseInsensitiveEnumMeta(EnumMeta):
     .. code-block:: python
 
         from enum import Enum
-        from generic.core.runtime import CaseInsensitiveEnumMeta
+        from generic.core.utils import CaseInsensitiveEnumMeta
 
         class MyCustomEnum(str, Enum, metaclass=CaseInsensitiveEnumMeta):
             FOO = 'foo'
