@@ -24,9 +24,9 @@
 #
 # --------------------------------------------------------------------------
 import pytest
-from generic.core import PipelineClient
+from generic.core.runtime import PipelineClient
 from generic.core.exceptions import DecodeError
-from generic.core.pipeline.transport.requests import RequestsTransport
+from generic.core.transport.requests import RequestsTransport
 
 from utils import HTTP_REQUESTS
 

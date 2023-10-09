@@ -6,14 +6,14 @@
 import time
 from typing import TYPE_CHECKING, Optional, TypeVar, MutableMapping, Any
 
-from .. import PipelineRequest, PipelineResponse
-from ...rest import HttpResponse, HttpRequest
+from ..runtime.pipeline import PipelineRequest, PipelineResponse
+from ..rest import HttpResponse, HttpRequest
 from . import HTTPPolicy, SansIOHTTPPolicy
-from ...exceptions import ServiceRequestError
+from ..exceptions import ServiceRequestError
 
 if TYPE_CHECKING:
     # pylint:disable=unused-import
-    from ...credentials import (
+    from ..credentials import (
         AccessToken,
         TokenCredential,
         ServiceKeyCredential,

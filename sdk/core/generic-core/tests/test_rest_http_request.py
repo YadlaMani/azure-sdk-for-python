@@ -18,9 +18,8 @@ except ImportError:
     import collections  # type: ignore
 
 from generic.core.rest import HttpRequest
-from generic.core.pipeline.policies import UserAgentPolicy, SansIOHTTPPolicy, RetryPolicy
+from generic.core.policies import SansIOHTTPPolicy
 from rest_client import TestRestClient
-from generic.core import PipelineClient
 
 
 @pytest.fixture
@@ -172,7 +171,7 @@ def test_bytes_content():
 
 
 def test_iterator_content(assert_iterator_body):
-    # NOTE: in httpx, content reads out the actual value. Don't do that (yet) in azure rest
+    # NOTE: in httpx, content reads out the actual value. Don't do that (yet).
     def hello_world():
         yield b"Hello, "
         yield b"world!"
@@ -253,14 +252,14 @@ def test_data_str_input():
         "scope": "fake_scope",
         "grant_type": "refresh_token",
         "refresh_token": "REDACTED",
-        "service": "fake_url.azurecr.io",
+        "service": "fake_url.foo.io",
     }
     request = HttpRequest("POST", "http://localhost:3000/", data=data)
     assert len(request.content) == 4
     assert request.content["scope"] == "fake_scope"
     assert request.content["grant_type"] == "refresh_token"
     assert request.content["refresh_token"] == "REDACTED"
-    assert request.content["service"] == "fake_url.azurecr.io"
+    assert request.content["service"] == "fake_url.foo.io"
     assert len(request.headers) == 1
     assert request.headers["Content-Type"] == "application/x-www-form-urlencoded"
 
@@ -330,9 +329,9 @@ def test_complicated_json(client):
 
 
 def test_use_custom_json_encoder():
-    # this is to test we're using azure.core.serialization.AzureJSONEncoder
+    # this is to test we're using generic.core.serialization.CoreJSONEncoder
     # to serialize our JSON objects
-    # since json can't serialize bytes by default but AzureJSONEncoder can,
+    # since json can't serialize bytes by default but CoreJSONEncoder can,
     # we pass in bytes and check that they are serialized
     request = HttpRequest("GET", "/headers", json=bytearray("mybytes", "utf-8"))
     assert request.content == '"bXlieXRlcw=="'  # cspell:disable-line

@@ -29,9 +29,9 @@ from collections.abc import Iterable
 from typing import TypeVar, Generic, Optional, Any
 
 from .pipeline import Pipeline
-from .pipeline.transport._base import PipelineClientBase
-from .pipeline.transport import HttpTransport
-from .pipeline.policies import (
+from ..transport._base import PipelineClientBase
+from ..transport import HttpTransport
+from ..policies import (
     ContentDecodePolicy,
     RetryPolicy,
     HeadersPolicy,
@@ -144,7 +144,7 @@ class PipelineClient(PipelineClientBase, Generic[HTTPRequestType, HTTPResponseTy
 
         if transport is None:
             # Use private import for better typing, mypy and pyright don't like PEP562
-            from .pipeline.transport.requests import RequestsTransport
+            from ..transport.requests import RequestsTransport
 
             transport = RequestsTransport(**kwargs)
 

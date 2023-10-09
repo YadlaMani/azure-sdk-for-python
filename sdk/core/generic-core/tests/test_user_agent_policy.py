@@ -3,8 +3,8 @@
 # Licensed under the MIT License.
 # ------------------------------------
 """Tests for the user agent policy."""
-from generic.core.pipeline.policies import UserAgentPolicy
-from generic.core.pipeline import PipelineRequest, PipelineContext
+from generic.core.policies import UserAgentPolicy
+from generic.core.runtime.pipeline import PipelineRequest, PipelineContext
 
 try:
     from unittest import mock

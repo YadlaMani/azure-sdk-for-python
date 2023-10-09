@@ -40,8 +40,8 @@ from typing import (
 from types import TracebackType
 
 from .pipeline import AsyncPipeline
-from .pipeline.transport._base import PipelineClientBase
-from .pipeline.policies import (
+from ..transport._base import PipelineClientBase
+from ..policies import (
     ContentDecodePolicy,
     AsyncRetryPolicy,
     HeadersPolicy,
@@ -227,7 +227,7 @@ class AsyncPipelineClient(
 
         if not transport:
             # Use private import for better typing, mypy and pyright don't like PEP562
-            from .pipeline.transport.aiohttp import AioHttpTransport
+            from ..transport.aiohttp import AioHttpTransport
 
             transport = AioHttpTransport(**kwargs)
 

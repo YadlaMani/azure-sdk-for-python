@@ -29,10 +29,10 @@ import logging
 import time
 from enum import Enum
 
-from .. import PipelineResponse, PipelineRequest, PipelineContext
+from ..runtime.pipeline import PipelineResponse, PipelineRequest, PipelineContext
 from ..transport import HttpTransport
-from ...rest import HttpResponse, AsyncHttpResponse, HttpRequest
-from ...exceptions import (
+from ..rest import HttpResponse, AsyncHttpResponse, HttpRequest
+from ..exceptions import (
     ServiceError,
     ClientAuthenticationError,
     ServiceResponseError,
@@ -43,7 +43,7 @@ from ...exceptions import (
 
 from ._base import HTTPPolicy, RequestHistory
 from . import _utils
-from ..._enum_meta import CaseInsensitiveEnumMeta
+from ..runtime._enum_meta import CaseInsensitiveEnumMeta
 
 HTTPResponseType = TypeVar("HTTPResponseType", bound=HttpResponse)
 AllHttpResponseType = TypeVar("AllHttpResponseType", HttpResponse, AsyncHttpResponse)

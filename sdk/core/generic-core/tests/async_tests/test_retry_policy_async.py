@@ -23,12 +23,12 @@ from generic.core.exceptions import (
     ServiceResponseError,
     ServiceResponseTimeoutError,
 )
-from generic.core.pipeline.policies import (
+from generic.core.policies import (
     AsyncRetryPolicy,
     RetryMode,
 )
-from generic.core.pipeline import AsyncPipeline, PipelineResponse, PipelineRequest
-from generic.core.pipeline.transport import AsyncHttpTransport
+from generic.core.runtime.pipeline import AsyncPipeline, PipelineResponse, PipelineRequest
+from generic.core.transport import AsyncHttpTransport
 
 from utils import HTTP_REQUESTS, ASYNC_HTTP_RESPONSES, create_http_response, request_and_responses_product
 

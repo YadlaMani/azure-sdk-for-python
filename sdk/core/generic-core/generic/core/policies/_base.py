@@ -38,7 +38,7 @@ from typing import (
     Dict,
 )
 
-from .. import PipelineRequest, PipelineResponse
+from ..runtime.pipeline import PipelineRequest, PipelineResponse
 
 HTTPResponseType = TypeVar("HTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")

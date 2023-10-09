@@ -39,8 +39,8 @@ from ..exceptions import (
     ServiceResponseError,
     IncompleteReadError,
 )
-from ..pipeline import AsyncPipeline
-from ..pipeline.transport._base_async import _ResponseStopIteration
+from ..runtime.pipeline import AsyncPipeline
+from ..transport._base_async import _ResponseStopIteration
 
 if TYPE_CHECKING:
     from ..rest import HttpRequest, AsyncHttpResponse
@@ -272,8 +272,8 @@ class AioHttpStreamDownloadGenerator(collections.abc.AsyncIterator):
         return self.content_length
 
     async def __anext__(self):
+        internal_response = self.response._internal_response  # pylint: disable=protected-access
         try:
-            internal_response = self.response._internal_response  # pylint: disable=protected-access
             # TODO: Determine how chunks should be read.
             # chunk = await self.response.internal_response.content.read(self.block_size)
             chunk = await internal_response.content.read(self.block_size)  # pylint: disable=protected-access

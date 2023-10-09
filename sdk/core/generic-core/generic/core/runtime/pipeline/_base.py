@@ -32,9 +32,9 @@ from . import (
     PipelineResponse,
     PipelineContext,
 )
-from .policies import HTTPPolicy, SansIOHTTPPolicy
+from ...policies import HTTPPolicy, SansIOHTTPPolicy
 from ._tools import await_result as _await_result
-from .transport import HttpTransport
+from ...transport import HttpTransport
 
 HTTPResponseType = TypeVar("HTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")

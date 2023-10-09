@@ -7,8 +7,8 @@ from typing import Optional, Type, Any
 from types import TracebackType
 from copy import deepcopy
 
-from generic.core import AsyncPipelineClient
-from generic.core.pipeline import policies
+from generic.core.runtime import AsyncPipelineClient
+from generic.core import policies
 
 
 class AsyncTestRestClient(object):
@@ -19,17 +19,17 @@ class AsyncTestRestClient(object):
 
     def send_request(self, request, **kwargs):
         """Runs the network request through the client's chained policies.
-        >>> from azure.core.rest import HttpRequest
+        >>> from generic.core.rest import HttpRequest
         >>> request = HttpRequest("GET", "http://localhost:3000/helloWorld")
         <HttpRequest [GET], url: 'http://localhost:3000/helloWorld'>
         >>> response = await client.send_request(request)
         <AsyncHttpResponse: 200 OK>
         For more information on this code flow, see https://aka.ms/azsdk/python/protocol/quickstart
         :param request: The network request you want to make. Required.
-        :type request: ~azure.core.rest.HttpRequest
+        :type request: ~generic.core.rest.HttpRequest
         :keyword bool stream: Whether the response payload will be streamed. Defaults to False.
         :return: The response of your network call. Does not do error handling on your response.
-        :rtype: ~azure.core.rest.AsyncHttpResponse
+        :rtype: ~generic.core.rest.AsyncHttpResponse
         """
         request_copy = deepcopy(request)
         request_copy.url = self._client.format_url(request_copy.url)

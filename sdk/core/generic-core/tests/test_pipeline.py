@@ -36,17 +36,17 @@ import sys
 
 import pytest
 
-from generic.core.pipeline import Pipeline
-from generic.core import PipelineClient
-from generic.core.pipeline.policies import (
+from generic.core.runtime.pipeline import Pipeline
+from generic.core.runtime import PipelineClient
+from generic.core.policies import (
     SansIOHTTPPolicy,
     UserAgentPolicy,
     RetryPolicy,
     HTTPPolicy,
 )
-from generic.core.pipeline.transport._base import PipelineClientBase, _format_url_section
-from generic.core.pipeline.transport import HttpTransport
-from generic.core.pipeline.transport.requests import RequestsTransport
+from generic.core.transport._base import PipelineClientBase, _format_url_section
+from generic.core.transport import HttpTransport
+from generic.core.transport.requests import RequestsTransport
 from utils import HTTP_REQUESTS
 
 from generic.core.exceptions import ServiceError

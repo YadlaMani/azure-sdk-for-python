@@ -29,9 +29,9 @@ from typing import Any, Union, Generic, TypeVar, List, Optional, Iterable, Type
 from typing_extensions import AsyncContextManager
 
 from . import PipelineRequest, PipelineResponse, PipelineContext
-from .policies import AsyncHTTPPolicy, SansIOHTTPPolicy
+from ...policies import AsyncHTTPPolicy, SansIOHTTPPolicy
 from ._tools_async import await_result as _await_result
-from .transport import AsyncHttpTransport
+from ...transport import AsyncHttpTransport
 
 AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")

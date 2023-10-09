@@ -35,9 +35,9 @@ import requests
 import pytest
 
 from generic.core.exceptions import DecodeError, ServiceError
-from generic.core.pipeline import Pipeline, PipelineResponse, PipelineRequest, PipelineContext
+from generic.core.runtime.pipeline import Pipeline, PipelineResponse, PipelineRequest, PipelineContext
 
-from generic.core.pipeline.policies import (
+from generic.core.policies import (
     NetworkTraceLoggingPolicy,
     ContentDecodePolicy,
     RequestHistory,
@@ -113,7 +113,7 @@ def test_request_history_type_error(http_request):
     assert request_history.http_request.method == request.method
 
 
-@mock.patch("generic.core.pipeline.policies._universal._LOGGER")
+@mock.patch("generic.core.policies._universal._LOGGER")
 @pytest.mark.parametrize("http_request,http_response", request_and_responses_product(HTTP_RESPONSES))
 def test_no_log(mock_http_logger, http_request, http_response):
     universal_request = http_request("GET", "http://localhost/")

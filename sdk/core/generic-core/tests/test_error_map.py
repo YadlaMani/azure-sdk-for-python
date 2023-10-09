@@ -24,7 +24,7 @@
 #
 # --------------------------------------------------------------------------
 import pytest
-from azure.core.exceptions import (
+from generic.core.exceptions import (
     ResourceNotFoundError,
     ResourceExistsError,
     map_error,

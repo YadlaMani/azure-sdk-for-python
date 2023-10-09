@@ -35,7 +35,7 @@ from urllib3.exceptions import (
     ProtocolError,
 )
 
-from ..pipeline import Pipeline
+from ..runtime.pipeline import Pipeline
 from ._http_response_impl import _HttpResponseBaseImpl, HttpResponseImpl
 from ..exceptions import (
     ServiceRequestError,

@@ -17,14 +17,12 @@ from generic.core.exceptions import (
     ServiceResponseError,
     ServiceResponseTimeoutError,
 )
-from generic.core.pipeline.policies import (
+from generic.core.policies import (
     RetryPolicy,
     RetryMode,
 )
-from generic.core.pipeline import Pipeline, PipelineResponse, PipelineRequest
-from generic.core.pipeline.transport import (
-    HttpTransport,
-)
+from generic.core.runtime.pipeline import Pipeline, PipelineResponse, PipelineRequest
+from generic.core.transport import HttpTransport
 import tempfile
 import os
 import time

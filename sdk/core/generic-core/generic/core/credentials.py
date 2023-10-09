@@ -3,8 +3,10 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for
 # license information.
 # -------------------------------------------------------------------------
+from __future__ import annotations
 from collections import namedtuple
-from typing import Any, NamedTuple, Optional
+from types import TracebackType
+from typing import Any, NamedTuple, Optional, AsyncContextManager, Type
 from typing_extensions import Protocol, runtime_checkable
 
 
@@ -40,12 +42,12 @@ class TokenCredential(Protocol):
 
 ServiceNamedKey = namedtuple("ServiceNamedKey", ["name", "key"])
 
-
 __all__ = [
     "AccessToken",
     "ServiceKeyCredential",
     "ServiceNamedKeyCredential",
     "TokenCredential",
+    "AsyncTokenCredential",
 ]
 
 
@@ -122,3 +124,32 @@ class ServiceNamedKeyCredential:
         if not isinstance(name, str) or not isinstance(key, str):
             raise TypeError("Both name and key must be strings.")
         self._credential = ServiceNamedKey(name, key)
+
+
+@runtime_checkable
+class AsyncTokenCredential(Protocol, AsyncContextManager["AsyncTokenCredential"]):
+    """Protocol for classes able to provide OAuth tokens."""
+
+    async def get_token(self, *scopes: str, claims: Optional[str] = None, **kwargs: Any) -> AccessToken:
+        """Request an access token for `scopes`.
+
+        :param str scopes: The type of access needed.
+
+        :keyword str claims: Additional claims required in the token, such as those returned in a resource
+            provider's claims challenge following an authorization failure.
+
+        :rtype: AccessToken
+        :return: An AccessToken instance containing the token string and its expiration time in Unix time.
+        """
+        ...
+
+    async def close(self) -> None:
+        pass
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]] = None,
+        exc_value: Optional[BaseException] = None,
+        traceback: Optional[TracebackType] = None,
+    ) -> None:
+        pass

@@ -3,10 +3,8 @@
 # Licensed under the MIT License.
 # ------------------------------------
 import requests
-from generic.core.pipeline.transport import (
-    HttpTransport,
-)
-from generic.core.pipeline import Pipeline, PipelineResponse
+from generic.core.transport import HttpTransport
+from generic.core.runtime.pipeline import Pipeline
 from generic.core.rest._requests_basic import StreamDownloadGenerator
 
 try:

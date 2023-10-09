@@ -7,15 +7,15 @@ import asyncio
 import time
 from typing import TYPE_CHECKING, Any, Awaitable, Optional, cast, TypeVar
 
-from ...credentials import AccessToken
-from .. import PipelineRequest, PipelineResponse
-from .._base_async import AsyncHTTPPolicy
+from ..credentials import AccessToken
+from ..runtime.pipeline import PipelineRequest, PipelineResponse
+from ..runtime.pipeline._tools_async import await_result
+from ._base_async import AsyncHTTPPolicy
 from ._authentication import _BearerTokenCredentialPolicyBase
-from ...rest import AsyncHttpResponse, HttpRequest
-from .._tools_async import await_result
+from ..rest import AsyncHttpResponse, HttpRequest
 
 if TYPE_CHECKING:
-    from ...credentials_async import AsyncTokenCredential
+    from ..credentials import AsyncTokenCredential
 
 AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType", bound=AsyncHttpResponse)
 HTTPRequestType = TypeVar("HTTPRequestType", bound=HttpRequest)

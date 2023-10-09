@@ -23,13 +23,35 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
+import abc
 
-from ._version import VERSION
+from typing import Generic, TypeVar
+from ..runtime.pipeline import PipelineRequest, PipelineResponse
 
-__version__ = VERSION
+AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType")
+HTTPResponseType = TypeVar("HTTPResponseType")
+HTTPRequestType = TypeVar("HTTPRequestType")
 
-from ._match_conditions import MatchConditions
 
-__all__ = [
-    "MatchConditions",
-]
+class AsyncHTTPPolicy(abc.ABC, Generic[HTTPRequestType, AsyncHTTPResponseType]):
+    """An async HTTP policy ABC.
+
+    Use with an asynchronous pipeline.
+    """
+
+    next: "AsyncHTTPPolicy[HTTPRequestType, AsyncHTTPResponseType]"
+    """Pointer to the next policy or a transport (wrapped as a policy). Will be set at pipeline creation."""
+
+    @abc.abstractmethod
+    async def send(
+        self, request: PipelineRequest[HTTPRequestType]
+    ) -> PipelineResponse[HTTPRequestType, AsyncHTTPResponseType]:
+        """Abstract send method for a asynchronous pipeline. Mutates the request.
+
+        Context content is dependent on the HttpTransport.
+
+        :param request: The pipeline request object.
+        :type request: ~generic.core.pipeline.PipelineRequest
+        :return: The pipeline response object.
+        :rtype: ~generic.core.pipeline.PipelineResponse
+        """

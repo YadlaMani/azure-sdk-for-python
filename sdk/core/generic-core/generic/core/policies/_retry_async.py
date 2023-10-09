@@ -30,10 +30,10 @@ from typing import TypeVar, Dict, Any, Optional, cast
 import logging
 import time
 
-from .. import PipelineRequest, PipelineResponse
+from ..runtime.pipeline import PipelineRequest, PipelineResponse
 from ..transport import AsyncHttpTransport
-from ...rest import AsyncHttpResponse, HttpRequest
-from ...exceptions import (
+from ..rest import AsyncHttpResponse, HttpRequest
+from ..exceptions import (
     ServiceError,
     ClientAuthenticationError,
     ServiceRequestError,

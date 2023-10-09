@@ -25,7 +25,7 @@
 # --------------------------------------------------------------------------
 from enum import Enum
 
-from azure.core import CaseInsensitiveEnumMeta
+from generic.core.runtime import CaseInsensitiveEnumMeta
 
 
 class MyCustomEnum(str, Enum, metaclass=CaseInsensitiveEnumMeta):

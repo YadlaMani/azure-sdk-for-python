@@ -28,7 +28,7 @@ from typing import TYPE_CHECKING, Callable, TypeVar
 from typing_extensions import ParamSpec
 
 if TYPE_CHECKING:
-    from ..rest import HttpResponse
+    from ...rest import HttpResponse
 
 
 P = ParamSpec("P")

@@ -30,7 +30,7 @@ HTTPResponseType = TypeVar("HTTPResponseType", covariant=True)  # pylint: disabl
 HTTPRequestType = TypeVar("HTTPRequestType", covariant=True)  # pylint: disable=typevar-name-incorrect-variance
 
 if TYPE_CHECKING:
-    from .transport import HttpTransport, AsyncHttpTransport
+    from ...transport import HttpTransport, AsyncHttpTransport
 
     TransportType = Union[HttpTransport[Any, Any], AsyncHttpTransport[Any, Any]]
 

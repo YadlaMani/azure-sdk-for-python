@@ -28,11 +28,11 @@ import email.utils
 from typing import Optional, cast, Union
 from urllib.parse import urlparse
 
-from ...rest import HttpResponse, AsyncHttpResponse, HttpRequest
+from ..rest import HttpResponse, AsyncHttpResponse, HttpRequest
 
 
-from ...utils._utils import _FixedOffset, case_insensitive_dict
-from .. import PipelineResponse
+from ..utils._utils import _FixedOffset, case_insensitive_dict
+from ..runtime.pipeline import PipelineResponse
 
 AllHttpResponseType = Union[HttpResponse, AsyncHttpResponse]
 
