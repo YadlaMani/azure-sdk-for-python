@@ -40,12 +40,9 @@ from ...exceptions import (
     HttpResponseError,
 )
 
-from .._base import HttpTransport, _create_connection_config
+from .._base import HttpTransport, _create_connection_config, _handle_non_stream_rest_response
 from ._bigger_block_size_http_adapters import BiggerBlockSizeHTTPAdapter
 from ...rest._requests_basic import RestRequestsTransportResponse
-from ...runtime.pipeline._tools import (
-    handle_non_stream_rest_response as _handle_non_stream_rest_response,
-)
 
 if TYPE_CHECKING:
     from ...rest import HttpRequest as RestHttpRequest, HttpResponse as RestHttpResponse

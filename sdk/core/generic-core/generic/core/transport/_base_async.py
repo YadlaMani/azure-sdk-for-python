@@ -26,12 +26,30 @@
 from __future__ import annotations
 import asyncio
 import abc
-from typing import TypeVar, Generic, Any, AsyncContextManager
+from typing import TypeVar, Generic, Any, AsyncContextManager, TYPE_CHECKING
 
+if TYPE_CHECKING:
+    from ..rest import AsyncHttpResponse
 
 AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType")
 HTTPResponseType = TypeVar("HTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")
+
+
+async def _handle_non_stream_rest_response(response: AsyncHttpResponse) -> None:
+    """Handle reading and closing of non stream rest responses.
+    For our new rest responses, we have to call .read() and .close() for our non-stream
+    responses. This way, we load in the body for users to access.
+
+    :param response: The response to read and close.
+    :type response: ~generic.core.rest.AsyncHttpResponse
+    """
+    try:
+        await response.read()
+        await response.close()
+    except Exception as exc:
+        await response.close()
+        raise exc
 
 
 class _ResponseStopIteration(Exception):

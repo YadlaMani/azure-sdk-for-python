@@ -23,22 +23,15 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
-
+from __future__ import annotations
 import abc
 import copy
 import logging
 
-from typing import (
-    Generic,
-    TypeVar,
-    Union,
-    Any,
-    Optional,
-    Awaitable,
-    Dict,
-)
+from typing import Generic, TypeVar, Union, Any, Optional, Awaitable, Dict, TYPE_CHECKING
 
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 HTTPResponseType = TypeVar("HTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")

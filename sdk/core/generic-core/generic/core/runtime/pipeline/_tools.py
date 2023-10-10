@@ -23,13 +23,8 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
-from __future__ import annotations
-from typing import TYPE_CHECKING, Callable, TypeVar
+from typing import Callable, TypeVar
 from typing_extensions import ParamSpec
-
-if TYPE_CHECKING:
-    from ...rest import HttpResponse
-
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -50,19 +45,3 @@ def await_result(func: Callable[P, T], *args: P.args, **kwargs: P.kwargs) -> T:
     if hasattr(result, "__await__"):
         raise TypeError("Policy {} returned awaitable object in non-async pipeline.".format(func))
     return result
-
-
-def handle_non_stream_rest_response(response: HttpResponse) -> None:
-    """Handle reading and closing of non stream rest responses.
-    For our new rest responses, we have to call .read() and .close() for our non-stream
-    responses. This way, we load in the body for users to access.
-
-    :param response: The response to read and close.
-    :type response: ~generic.core.rest.HttpResponse
-    """
-    try:
-        response.read()
-        response.close()
-    except Exception as exc:
-        response.close()
-        raise exc

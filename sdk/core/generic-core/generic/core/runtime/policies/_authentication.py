@@ -3,21 +3,22 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for
 # license information.
 # -------------------------------------------------------------------------
+from __future__ import annotations
 import time
 from typing import TYPE_CHECKING, Optional, TypeVar, MutableMapping, Any
 
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
-from ..rest import HttpResponse, HttpRequest
+from ...rest import HttpResponse, HttpRequest
 from . import HTTPPolicy, SansIOHTTPPolicy
-from ..exceptions import ServiceRequestError
+from ...exceptions import ServiceRequestError
 
 if TYPE_CHECKING:
     # pylint:disable=unused-import
-    from ..credentials import (
+    from ...credentials import (
         AccessToken,
         TokenCredential,
         ServiceKeyCredential,
     )
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 HTTPResponseType = TypeVar("HTTPResponseType", bound=HttpResponse)
 HTTPRequestType = TypeVar("HTTPRequestType", bound=HttpRequest)

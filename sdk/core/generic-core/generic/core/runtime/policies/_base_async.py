@@ -23,10 +23,13 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
+from __future__ import annotations
 import abc
 
-from typing import Generic, TypeVar
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
+from typing import Generic, TypeVar, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType")
 HTTPResponseType = TypeVar("HTTPResponseType")

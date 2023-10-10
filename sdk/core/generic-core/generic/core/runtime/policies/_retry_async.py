@@ -26,14 +26,14 @@
 """
 This module is the requests implementation of Pipeline ABC
 """
-from typing import TypeVar, Dict, Any, Optional, cast
+from __future__ import annotations
+from typing import Dict, Any, Optional, cast, TYPE_CHECKING
 import logging
 import time
 
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
-from ..transport import AsyncHttpTransport
-from ..rest import AsyncHttpResponse, HttpRequest
-from ..exceptions import (
+from ...transport import AsyncHttpTransport
+from ...rest import AsyncHttpResponse, HttpRequest
+from ...exceptions import (
     ServiceError,
     ClientAuthenticationError,
     ServiceRequestError,
@@ -41,13 +41,13 @@ from ..exceptions import (
 from ._base_async import AsyncHTTPPolicy
 from ._retry import RetryPolicyBase
 
-AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType", bound=AsyncHttpResponse)
-HTTPRequestType = TypeVar("HTTPRequestType", bound=HttpRequest)
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 _LOGGER = logging.getLogger(__name__)
 
 
-class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHTTPResponseType]):
+class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HttpRequest, AsyncHttpResponse]):
     """Async flavor of the retry policy.
 
     The async retry policy in the pipeline can be configured directly, or tweaked on a per-call basis.
@@ -85,8 +85,8 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHT
 
     async def _sleep_for_retry(
         self,
-        response: PipelineResponse[HTTPRequestType, AsyncHTTPResponseType],
-        transport: AsyncHttpTransport[HTTPRequestType, AsyncHTTPResponseType],
+        response: PipelineResponse[HttpRequest, AsyncHttpResponse],
+        transport: AsyncHttpTransport[HttpRequest, AsyncHttpResponse],
     ) -> bool:
         """Sleep based on the Retry-After response header value.
 
@@ -104,7 +104,7 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHT
         return False
 
     async def _sleep_backoff(
-        self, settings: Dict[str, Any], transport: AsyncHttpTransport[HTTPRequestType, AsyncHTTPResponseType]
+        self, settings: Dict[str, Any], transport: AsyncHttpTransport[HttpRequest, AsyncHttpResponse]
     ) -> None:
         """Sleep using exponential backoff. Immediately returns if backoff is 0.
 
@@ -120,8 +120,8 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHT
     async def sleep(
         self,
         settings: Dict[str, Any],
-        transport: AsyncHttpTransport[HTTPRequestType, AsyncHTTPResponseType],
-        response: Optional[PipelineResponse[HTTPRequestType, AsyncHTTPResponseType]] = None,
+        transport: AsyncHttpTransport[HttpRequest, AsyncHttpResponse],
+        response: Optional[PipelineResponse[HttpRequest, AsyncHttpResponse]] = None,
     ) -> None:
         """Sleep between retry attempts.
 
@@ -142,9 +142,7 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHT
                 return
         await self._sleep_backoff(settings, transport)
 
-    async def send(
-        self, request: PipelineRequest[HTTPRequestType]
-    ) -> PipelineResponse[HTTPRequestType, AsyncHTTPResponseType]:
+    async def send(self, request: PipelineRequest[HttpRequest]) -> PipelineResponse[HttpRequest, AsyncHttpResponse]:
         """Uses the configured retry policy to send the request to the next policy in the pipeline.
 
         :param request: The PipelineRequest object
@@ -168,8 +166,8 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HTTPRequestType, AsyncHT
             # here we know that this is an AsyncHttpTransport.
             # The correct fix is to make PipelineContext generic, but that's a breaking change and a lot of
             # generic to update in Pipeline, PipelineClient, PipelineRequest, PipelineResponse, etc.
-            transport: AsyncHttpTransport[HTTPRequestType, AsyncHTTPResponseType] = cast(
-                AsyncHttpTransport[HTTPRequestType, AsyncHTTPResponseType], request.context.transport
+            transport: AsyncHttpTransport[HttpRequest, AsyncHttpResponse] = cast(
+                AsyncHttpTransport[HttpRequest, AsyncHttpResponse], request.context.transport
             )
             try:
                 self._configure_timeout(request, absolute_timeout, is_response_error)

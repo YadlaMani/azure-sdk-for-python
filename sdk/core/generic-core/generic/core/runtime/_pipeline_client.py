@@ -31,7 +31,7 @@ from typing import TypeVar, Generic, Optional, Any
 from .pipeline import Pipeline
 from ..transport._base import PipelineClientBase
 from ..transport import HttpTransport
-from ..policies import (
+from .policies import (
     ContentDecodePolicy,
     RetryPolicy,
     HeadersPolicy,

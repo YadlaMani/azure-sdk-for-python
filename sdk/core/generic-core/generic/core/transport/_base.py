@@ -29,7 +29,10 @@ import logging
 import time
 from urllib.parse import urlparse
 
-from typing import Generic, TypeVar, Any, ContextManager, Union, Optional, MutableMapping
+from typing import Generic, TypeVar, Any, ContextManager, Union, Optional, MutableMapping, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from ..rest import HttpResponse
 
 HTTPResponseType = TypeVar("HTTPResponseType")
 HTTPRequestType = TypeVar("HTTPRequestType")
@@ -125,6 +128,22 @@ def _create_connection_config(  # pylint: disable=unused-argument
         "connection_cert": connection_cert,
         "data_block_size": connection_data_block_size,
     }
+
+
+def _handle_non_stream_rest_response(response: HttpResponse) -> None:
+    """Handle reading and closing of non stream rest responses.
+    For our new rest responses, we have to call .read() and .close() for our non-stream
+    responses. This way, we load in the body for users to access.
+
+    :param response: The response to read and close.
+    :type response: ~generic.core.rest.HttpResponse
+    """
+    try:
+        response.read()
+        response.close()
+    except Exception as exc:
+        response.close()
+        raise exc
 
 
 class HttpTransport(ContextManager["HttpTransport"], abc.ABC, Generic[HTTPRequestType, HTTPResponseType]):

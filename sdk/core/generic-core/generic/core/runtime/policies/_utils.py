@@ -23,16 +23,17 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
+from __future__ import annotations
 import datetime
 import email.utils
-from typing import Optional, cast, Union
+from typing import Optional, cast, Union, TYPE_CHECKING
 from urllib.parse import urlparse
 
-from ..rest import HttpResponse, AsyncHttpResponse, HttpRequest
+from ...rest import HttpResponse, AsyncHttpResponse, HttpRequest
+from ...utils._utils import _FixedOffset, case_insensitive_dict
 
-
-from ..utils._utils import _FixedOffset, case_insensitive_dict
-from ..runtime.pipeline import PipelineResponse
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineResponse
 
 AllHttpResponseType = Union[HttpResponse, AsyncHttpResponse]
 

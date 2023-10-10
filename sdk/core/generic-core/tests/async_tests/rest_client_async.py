@@ -3,12 +3,11 @@
 # Licensed under the MIT License. See License.txt in the project root for
 # license information.
 # --------------------------------------------------------------------------
-from typing import Optional, Type, Any
+from typing import Optional, Type
 from types import TracebackType
 from copy import deepcopy
 
 from generic.core.runtime import AsyncPipelineClient
-from generic.core import policies
 
 
 class AsyncTestRestClient(object):

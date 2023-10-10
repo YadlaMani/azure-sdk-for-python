@@ -3,19 +3,21 @@
 # Licensed under the MIT License. See LICENSE.txt in the project root for
 # license information.
 # -------------------------------------------------------------------------
+from __future__ import annotations
 import asyncio
 import time
 from typing import TYPE_CHECKING, Any, Awaitable, Optional, cast, TypeVar
 
-from ..credentials import AccessToken
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
-from ..runtime.pipeline._tools_async import await_result
+from ...credentials import AccessToken
+from ..pipeline import PipelineRequest, PipelineResponse
+from ..pipeline._tools_async import await_result
 from ._base_async import AsyncHTTPPolicy
 from ._authentication import _BearerTokenCredentialPolicyBase
-from ..rest import AsyncHttpResponse, HttpRequest
+from ...rest import AsyncHttpResponse, HttpRequest
 
 if TYPE_CHECKING:
-    from ..credentials import AsyncTokenCredential
+    from ...credentials import AsyncTokenCredential
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType", bound=AsyncHttpResponse)
 HTTPRequestType = TypeVar("HTTPRequestType", bound=HttpRequest)

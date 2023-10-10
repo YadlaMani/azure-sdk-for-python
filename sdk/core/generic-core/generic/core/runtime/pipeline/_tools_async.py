@@ -23,11 +23,8 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
-from typing import TYPE_CHECKING, Callable, TypeVar, Awaitable, Union, overload
+from typing import Callable, TypeVar, Awaitable, Union, overload
 from typing_extensions import ParamSpec
-
-if TYPE_CHECKING:
-    from ...rest import AsyncHttpResponse as RestAsyncHttpResponse
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -57,19 +54,3 @@ async def await_result(func: Callable[P, Union[T, Awaitable[T]]], *args: P.args,
     if isinstance(result, Awaitable):
         return await result
     return result
-
-
-async def handle_no_stream_rest_response(response: "RestAsyncHttpResponse") -> None:
-    """Handle reading and closing of non stream rest responses.
-    For our new rest responses, we have to call .read() and .close() for our non-stream
-    responses. This way, we load in the body for users to access.
-
-    :param response: The response to read and close.
-    :type response: ~generic.core.rest.AsyncHttpResponse
-    """
-    try:
-        await response.read()
-        await response.close()
-    except Exception as exc:
-        await response.close()
-        raise exc

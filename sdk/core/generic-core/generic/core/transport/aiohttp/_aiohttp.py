@@ -37,12 +37,10 @@ from ...exceptions import (
     ServiceRequestError,
     ServiceResponseError,
 )
-from .._base_async import AsyncHttpTransport
+from .._base_async import AsyncHttpTransport, _handle_non_stream_rest_response
 from .._base import _create_connection_config
 from ...rest._aiohttp import RestAioHttpTransportResponse
-from ...runtime.pipeline._tools_async import (
-    handle_no_stream_rest_response as _handle_no_stream_rest_response,
-)
+
 
 if TYPE_CHECKING:
     from ...rest import (
@@ -230,7 +228,7 @@ class AioHttpTransport(AsyncHttpTransport):
                 decompress=not auto_decompress,
             )
             if not stream_response:
-                await _handle_no_stream_rest_response(response)
+                await _handle_non_stream_rest_response(response)
 
         except aiohttp.client_exceptions.ClientResponseError as err:
             raise ServiceResponseError(err, error=err) from err

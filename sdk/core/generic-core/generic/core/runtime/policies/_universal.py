@@ -26,6 +26,7 @@
 """
 This module is the requests implementation of Pipeline ABC
 """
+from __future__ import annotations
 import json
 import inspect
 import logging
@@ -34,22 +35,23 @@ import platform
 import xml.etree.ElementTree as ET
 import types
 import re
-from typing import IO, cast, Union, Optional, AnyStr, Dict, Any, Set, Mapping
+from typing import IO, cast, Union, Optional, AnyStr, Dict, Any, Set, Mapping, TYPE_CHECKING
 
-from .. import __version__ as core_version
-from ..exceptions import DecodeError
+from ... import __version__ as core_version
+from ...exceptions import DecodeError
 
-from ..runtime.pipeline import PipelineRequest, PipelineResponse
 from ._base import SansIOHTTPPolicy
 
-from ..rest import HttpRequest
-from ..rest._rest_py3 import _HttpResponseBase as SansIOHttpResponse
+from ...rest import HttpRequest
+from ...rest._rest_py3 import _HttpResponseBase as SansIOHttpResponse
+
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
 _LOGGER = logging.getLogger(__name__)
 
 HTTPRequestType = HttpRequest
 HTTPResponseType = SansIOHttpResponse
-PipelineResponseType = PipelineResponse[HTTPRequestType, HTTPResponseType]
 
 
 class HeadersPolicy(SansIOHTTPPolicy[HTTPRequestType, HTTPResponseType]):

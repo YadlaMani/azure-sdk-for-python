@@ -17,7 +17,7 @@ from generic.core.exceptions import (
     ServiceResponseError,
     ServiceResponseTimeoutError,
 )
-from generic.core.policies import (
+from generic.core.runtime.policies import (
     RetryPolicy,
     RetryMode,
 )

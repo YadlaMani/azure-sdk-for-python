@@ -18,7 +18,7 @@ except ImportError:
     import collections  # type: ignore
 
 from generic.core.rest import HttpRequest
-from generic.core.policies import SansIOHTTPPolicy
+from generic.core.runtime.policies import SansIOHTTPPolicy
 from rest_client import TestRestClient
 
 

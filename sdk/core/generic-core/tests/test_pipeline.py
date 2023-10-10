@@ -38,7 +38,7 @@ import pytest
 
 from generic.core.runtime.pipeline import Pipeline
 from generic.core.runtime import PipelineClient
-from generic.core.policies import (
+from generic.core.runtime.policies import (
     SansIOHTTPPolicy,
     UserAgentPolicy,
     RetryPolicy,

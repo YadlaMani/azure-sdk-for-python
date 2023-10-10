@@ -41,7 +41,7 @@ from types import TracebackType
 
 from .pipeline import AsyncPipeline
 from ..transport._base import PipelineClientBase
-from ..policies import (
+from .policies import (
     ContentDecodePolicy,
     AsyncRetryPolicy,
     HeadersPolicy,

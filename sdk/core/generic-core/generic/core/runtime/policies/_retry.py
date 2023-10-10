@@ -23,16 +23,16 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
+from __future__ import annotations
 from typing import TypeVar, Any, Dict, Optional, Type, List, Union, cast, IO, MutableMapping
 from io import SEEK_SET, UnsupportedOperation
 import logging
 import time
 from enum import Enum
 
-from ..runtime.pipeline import PipelineResponse, PipelineRequest, PipelineContext
-from ..transport import HttpTransport
-from ..rest import HttpResponse, AsyncHttpResponse, HttpRequest
-from ..exceptions import (
+from ...transport import HttpTransport
+from ...rest import HttpResponse, AsyncHttpResponse, HttpRequest
+from ...exceptions import (
     ServiceError,
     ClientAuthenticationError,
     ServiceResponseError,
@@ -40,14 +40,12 @@ from ..exceptions import (
     ServiceRequestTimeoutError,
     ServiceResponseTimeoutError,
 )
-
 from ._base import HTTPPolicy, RequestHistory
 from . import _utils
-from ..utils import CaseInsensitiveEnumMeta
+from ...utils import CaseInsensitiveEnumMeta
+from ...runtime.pipeline import PipelineRequest, PipelineResponse, PipelineContext
 
-HTTPResponseType = TypeVar("HTTPResponseType", bound=HttpResponse)
 AllHttpResponseType = TypeVar("AllHttpResponseType", HttpResponse, AsyncHttpResponse)
-HTTPRequestType = TypeVar("HTTPRequestType", bound=HttpRequest)
 ClsRetryPolicy = TypeVar("ClsRetryPolicy", bound="RetryPolicyBase")
 
 _LOGGER = logging.getLogger(__name__)
@@ -88,7 +86,7 @@ class RetryPolicyBase:
         """Disable retries.
 
         :return: A retry policy with retries disabled.
-        :rtype: ~generic.core.pipeline.policies.RetryPolicy or ~generic.core.pipeline.policies.AsyncRetryPolicy
+        :rtype: ~generic.core.runtime.policies.RetryPolicy or ~generic.core.runtime.policies.AsyncRetryPolicy
         """
         return cls(retry_total=0)
 
@@ -174,7 +172,7 @@ class RetryPolicyBase:
     def _is_method_retryable(
         self,
         settings: Dict[str, Any],
-        request: HTTPRequestType,
+        request: HttpRequest,
         response: Optional[AllHttpResponseType] = None,
     ):
         """Checks if a given HTTP method should be retried upon, depending if
@@ -195,9 +193,7 @@ class RetryPolicyBase:
 
         return True
 
-    def is_retry(
-        self, settings: Dict[str, Any], response: PipelineResponse[HTTPRequestType, AllHttpResponseType]
-    ) -> bool:
+    def is_retry(self, settings: Dict[str, Any], response: PipelineResponse[HttpRequest, AllHttpResponseType]) -> bool:
         """Checks if method/status code is retryable.
 
         Based on allowlists and control variables such as the number of
@@ -250,7 +246,7 @@ class RetryPolicyBase:
         self,
         settings: Dict[str, Any],
         response: Optional[
-            Union[PipelineRequest[HTTPRequestType], PipelineResponse[HTTPRequestType, AllHttpResponseType]]
+            Union[PipelineRequest[HttpRequest], PipelineResponse[HttpRequest, AllHttpResponseType]]
         ] = None,
         error: Optional[Exception] = None,
     ) -> bool:
@@ -269,7 +265,7 @@ class RetryPolicyBase:
         """
         # FIXME This code is not None safe: https://github.com/Azure/azure-sdk-for-python/issues/31528
         response = cast(
-            Union[PipelineRequest[HTTPRequestType], PipelineResponse[HTTPRequestType, AllHttpResponseType]], response
+            Union[PipelineRequest[HttpRequest], PipelineResponse[HttpRequest, AllHttpResponseType]], response
         )
 
         settings["total"] -= 1
@@ -336,7 +332,7 @@ class RetryPolicyBase:
             context["history"] = retry_settings["history"]
 
     def _configure_timeout(
-        self, request: PipelineRequest[HTTPRequestType], absolute_timeout: float, is_response_error: bool
+        self, request: PipelineRequest[HttpRequest], absolute_timeout: float, is_response_error: bool
     ) -> None:
         if absolute_timeout <= 0:
             if is_response_error:
@@ -357,7 +353,7 @@ class RetryPolicyBase:
                 MutableMapping[str, Any], request.context.transport.connection_config  # type: ignore
             )
 
-            default_timeout = connection_config.get("connection_timeout")
+            default_timeout = cast(float, connection_config.get("connection_timeout"))
             try:
                 if absolute_timeout < default_timeout:
                     request.context.options["connection_timeout"] = absolute_timeout
@@ -365,7 +361,7 @@ class RetryPolicyBase:
                 # transport.connection_config.timeout is something unexpected (not a number)
                 pass
 
-    def _configure_positions(self, request: PipelineRequest[HTTPRequestType], retry_settings: Dict[str, Any]) -> None:
+    def _configure_positions(self, request: PipelineRequest[HttpRequest], retry_settings: Dict[str, Any]) -> None:
         body_position = None
         file_positions: Optional[Dict[str, int]] = None
         if request.http_request.content and hasattr(request.http_request.content, "read"):
@@ -392,7 +388,7 @@ class RetryPolicyBase:
         retry_settings["file_positions"] = file_positions
 
 
-class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]):
+class RetryPolicy(RetryPolicyBase, HTTPPolicy[HttpRequest, HttpResponse]):
     """A retry policy.
 
     The retry policy in the pipeline can be configured directly, or tweaked on a per-call basis.
@@ -435,8 +431,8 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]
 
     def _sleep_for_retry(
         self,
-        response: PipelineResponse[HTTPRequestType, HTTPResponseType],
-        transport: HttpTransport[HTTPRequestType, HTTPResponseType],
+        response: PipelineResponse[HttpRequest, HttpResponse],
+        transport: HttpTransport[HttpRequest, HttpResponse],
     ) -> bool:
         """Sleep based on the Retry-After response header value.
 
@@ -453,9 +449,7 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]
             return True
         return False
 
-    def _sleep_backoff(
-        self, settings: Dict[str, Any], transport: HttpTransport[HTTPRequestType, HTTPResponseType]
-    ) -> None:
+    def _sleep_backoff(self, settings: Dict[str, Any], transport: HttpTransport[HttpRequest, HttpResponse]) -> None:
         """Sleep using exponential backoff. Immediately returns if backoff is 0.
 
         :param dict settings: The retry settings.
@@ -470,8 +464,8 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]
     def sleep(
         self,
         settings: Dict[str, Any],
-        transport: HttpTransport[HTTPRequestType, HTTPResponseType],
-        response: Optional[PipelineResponse[HTTPRequestType, HTTPResponseType]] = None,
+        transport: HttpTransport[HttpRequest, HttpResponse],
+        response: Optional[PipelineResponse[HttpRequest, HttpResponse]] = None,
     ) -> None:
         """Sleep between retry attempts.
 
@@ -492,7 +486,7 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]
                 return
         self._sleep_backoff(settings, transport)
 
-    def send(self, request: PipelineRequest[HTTPRequestType]) -> PipelineResponse[HTTPRequestType, HTTPResponseType]:
+    def send(self, request: PipelineRequest[HttpRequest]) -> PipelineResponse[HttpRequest, HttpResponse]:
         """Sends the PipelineRequest object to the next policy. Uses retry settings if necessary.
 
         :param request: The PipelineRequest object
@@ -516,8 +510,8 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HTTPRequestType, HTTPResponseType]
             # here we know that this is an HttpTransport.
             # The correct fix is to make PipelineContext generic, but that's a breaking change and a lot of
             # generic to update in Pipeline, PipelineClient, PipelineRequest, PipelineResponse, etc.
-            transport: HttpTransport[HTTPRequestType, HTTPResponseType] = cast(
-                HttpTransport[HTTPRequestType, HTTPResponseType], request.context.transport
+            transport: HttpTransport[HttpRequest, HttpResponse] = cast(
+                HttpTransport[HttpRequest, HttpResponse], request.context.transport
             )
             try:
                 self._configure_timeout(request, absolute_timeout, is_response_error)
