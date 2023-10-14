@@ -39,7 +39,7 @@ def test_decompress_plain_no_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test.txt".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     content = response.read()
     decoded = content.decode("utf-8")
@@ -70,7 +70,7 @@ def test_compress_plain_no_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test.txt".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     content = response.read()
     decoded = content.decode("utf-8")
@@ -85,7 +85,7 @@ def test_decompress_compressed_no_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test.tar.gz".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     content = response.read()
     try:
@@ -100,7 +100,7 @@ def test_compress_compressed_no_header_offline(port, http_request):
     # expect compressed text
     client = PipelineClient("")
     request = http_request(method="GET", url="http://localhost:{}/streams/compressed_no_header".format(port))
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     data = response.iter_raw()
     content = b"".join(list(data))
@@ -117,9 +117,9 @@ def test_compress_compressed_no_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test.tar.gz".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
-    # data = response.stream_download(client._pipeline, decompress=False)
+    # data = response.stream_download(client.pipeline, decompress=False)
     # content = b"".join(list(data))
     content = response.read()
     try:
@@ -138,7 +138,7 @@ def test_decompress_plain_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test_with_header.txt".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     data = response.iter_bytes()
     with pytest.raises(DecodeError):
@@ -164,7 +164,7 @@ def test_compress_plain_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test_with_header.txt".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     data = response.iter_raw()
     content = b"".join(list(data))
@@ -181,7 +181,7 @@ def test_decompress_compressed_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test_with_header.tar.gz".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     content = response.read()
     decoded = content.decode("utf-8")
@@ -193,7 +193,7 @@ def test_decompress_compressed_header_offline(port, http_request):
     client = PipelineClient("")
     request = http_request(method="GET", url="http://localhost:{}/streams/decompress_header".format(port))
     with RequestsTransport() as sender:
-        response = client._pipeline.run(request, stream=True).http_response
+        response = client.pipeline.run(request, stream=True).http_response
         response.raise_for_status()
         content = response.read()
         decoded = content.decode("utf-8")
@@ -208,7 +208,7 @@ def test_compress_compressed_header(http_request):
     url = "https://{}.blob.core.windows.net/tests/test_with_header.tar.gz".format(account_name)
     client = PipelineClient(account_url)
     request = http_request("GET", url)
-    pipeline_response = client._pipeline.run(request, stream=True)
+    pipeline_response = client.pipeline.run(request, stream=True)
     response = pipeline_response.http_response
     data = response.iter_raw()
     content = b"".join(list(data))

@@ -16,10 +16,7 @@ from typing import (
     Union,
     Dict,
 )
-from datetime import timezone
 from urllib.parse import urlparse
-
-TZ_UTC = timezone.utc
 
 
 class _FixedOffset(datetime.tzinfo):

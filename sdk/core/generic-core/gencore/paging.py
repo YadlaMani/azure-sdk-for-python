@@ -38,7 +38,7 @@ from typing import (
 )
 import logging
 
-from .exceptions import ServiceError
+from .exceptions import BaseError
 
 
 _LOGGER = logging.getLogger(__name__)
@@ -84,7 +84,7 @@ class PageIterator(Iterator[Iterator[ReturnType]]):
             raise StopIteration("End of paging")
         try:
             self._response = self._get_next(self.continuation_token)
-        except ServiceError as error:
+        except BaseError as error:
             if not error.continuation_token:
                 error.continuation_token = self.continuation_token
             raise
@@ -181,7 +181,7 @@ class AsyncPageIterator(AsyncIterator[AsyncIterator[ReturnType]]):
             raise StopAsyncIteration("End of paging")
         try:
             self._response = await self._get_next(self.continuation_token)
-        except ServiceError as error:
+        except BaseError as error:
             if not error.continuation_token:
                 error.continuation_token = self.continuation_token
             raise

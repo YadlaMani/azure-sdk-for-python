@@ -47,7 +47,7 @@ from ...rest._requests_basic import RestRequestsTransportResponse
 if TYPE_CHECKING:
     from ...rest import HttpRequest as RestHttpRequest, HttpResponse as RestHttpResponse
 
-ServiceErrorUnion = Union[
+BaseErrorUnion = Union[
     ServiceRequestError,
     ServiceResponseError,
     IncompleteReadError,
@@ -132,7 +132,7 @@ class RequestsTransport(HttpTransport):
         """
         self.open()
         response = None
-        error: Optional[ServiceErrorUnion] = None
+        error: Optional[BaseErrorUnion] = None
 
         try:
             connection_timeout = kwargs.pop("connection_timeout", self.connection_config.get("timeout"))

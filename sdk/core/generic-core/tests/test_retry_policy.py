@@ -11,7 +11,7 @@ except ImportError:
 import pytest
 from itertools import product
 from gencore.exceptions import (
-    ServiceError,
+    BaseError,
     ServiceRequestError,
     ServiceRequestTimeoutError,
     ServiceResponseError,
@@ -147,7 +147,7 @@ def test_retry_seekable_stream(http_request, http_response):
             if self._first:
                 self._first = False
                 request.content.seek(0, 2)
-                raise ServiceError("fail on first")
+                raise BaseError("fail on first")
             position = request.content.tell()
             assert position == 0
             response = create_http_response(http_response, request, None, status_code=400)
@@ -182,7 +182,7 @@ def test_retry_seekable_file(http_request, http_response):
                     name, body = value[0], value[1]
                     if name and body and hasattr(body, "read"):
                         body.seek(0, 2)
-                        raise ServiceError("fail on first")
+                        raise BaseError("fail on first")
             for value in request._files.values():
                 name, body = value[0], value[1]
                 if name and body and hasattr(body, "read"):

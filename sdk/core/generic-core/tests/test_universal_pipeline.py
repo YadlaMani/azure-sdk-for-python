@@ -34,7 +34,7 @@ except ImportError:
 import requests
 import pytest
 
-from gencore.exceptions import DecodeError, ServiceError
+from gencore.exceptions import DecodeError, BaseError
 from gencore.runtime.pipeline import Pipeline, PipelineResponse, PipelineRequest, PipelineContext
 
 from gencore.runtime.policies import (
@@ -185,11 +185,11 @@ def test_no_log(mock_http_logger, http_request, http_response):
 def test_retry_without_http_response(http_request):
     class NaughtyPolicy(HTTPPolicy):
         def send(*args):
-            raise ServiceError("boo")
+            raise BaseError("boo")
 
     policies = [RetryPolicy(), NaughtyPolicy()]
     pipeline = Pipeline(policies=policies, transport=None)
-    with pytest.raises(ServiceError):
+    with pytest.raises(BaseError):
         pipeline.run(http_request("GET", url="https://foo.bar"))
 
 

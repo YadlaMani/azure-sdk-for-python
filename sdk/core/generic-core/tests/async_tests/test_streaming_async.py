@@ -40,7 +40,7 @@ async def test_decompress_plain_no_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_bytes()
         content = b""
@@ -60,7 +60,7 @@ async def test_compress_plain_no_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_raw()
         content = b""
@@ -80,7 +80,7 @@ async def test_decompress_compressed_no_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_bytes()
         content = b""
@@ -103,7 +103,7 @@ async def test_compress_compressed_no_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_raw()
         content = b""
@@ -129,7 +129,7 @@ async def test_decompress_plain_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_bytes()
         try:
@@ -151,7 +151,7 @@ async def test_compress_plain_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_raw()
         content = b""
@@ -171,7 +171,7 @@ async def test_decompress_compressed_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_bytes()
         content = b""
@@ -192,7 +192,7 @@ async def test_compress_compressed_header(http_request):
     client = AsyncPipelineClient(account_url)
     async with client:
         request = http_request("GET", url)
-        pipeline_response = await client._pipeline.run(request, stream=True)
+        pipeline_response = await client.pipeline.run(request, stream=True)
         response = pipeline_response.http_response
         data = response.iter_raw()
         content = b""

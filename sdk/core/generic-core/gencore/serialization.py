@@ -12,7 +12,6 @@ from datetime import timezone
 
 
 __all__ = ["NULL", "CoreJSONEncoder"]
-TZ_UTC = timezone.utc
 
 
 class _Null:
@@ -97,9 +96,9 @@ def _datetime_as_isostr(dt: Union[datetime, date, time, timedelta]) -> str:
         dt = cast(datetime, dt)
         # astimezone() fails for naive times in Python 2.7, so make make sure dt is aware (tzinfo is set)
         if not dt.tzinfo:
-            iso_formatted = dt.replace(tzinfo=TZ_UTC).isoformat()
+            iso_formatted = dt.replace(tzinfo=timezone.utc).isoformat()
         else:
-            iso_formatted = dt.astimezone(TZ_UTC).isoformat()
+            iso_formatted = dt.astimezone(timezone.utc).isoformat()
         # Replace the trailing "+00:00" UTC offset with "Z" (RFC 3339: https://www.ietf.org/rfc/rfc3339.txt)
         return iso_formatted.replace("+00:00", "Z")
     # Next try datetime.date or datetime.time

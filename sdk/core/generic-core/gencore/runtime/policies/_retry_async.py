@@ -34,7 +34,7 @@ import time
 from ...transport import AsyncHttpTransport
 from ...rest import AsyncHttpResponse, HttpRequest
 from ...exceptions import (
-    ServiceError,
+    BaseError,
     ClientAuthenticationError,
     ServiceRequestError,
 )
@@ -140,7 +140,7 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HttpRequest, AsyncHttpRe
         :type request: ~gencore.runtime.pipeline.PipelineRequest
         :return: Returns the PipelineResponse or raises error if maximum retries exceeded.
         :rtype: ~gencore.runtime.pipeline.PipelineResponse
-        :raise: ~gencore.exceptions.ServiceError if maximum retries exceeded.
+        :raise: ~gencore.exceptions.BaseError if maximum retries exceeded.
         :raise: ~gencore.exceptions.ClientAuthenticationError if authentication fails
         """
         retry_active = True
@@ -178,7 +178,7 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HttpRequest, AsyncHttpRe
                 # the authentication policy failed such that the client's request can't
                 # succeed--we'll never have a response to it, so propagate the exception
                 raise
-            except ServiceError as err:
+            except BaseError as err:
                 if absolute_timeout > 0 and self._is_method_retryable(retry_settings, request.http_request):
                     retry_active = self.increment(retry_settings, response=request, error=err)
                     if retry_active:
@@ -194,7 +194,7 @@ class AsyncRetryPolicy(RetryPolicyBase, AsyncHTTPPolicy[HttpRequest, AsyncHttpRe
                 if absolute_timeout:
                     absolute_timeout -= end_time - start_time
         if not response:
-            raise ServiceError("Maximum retries exceeded.")
+            raise BaseError("Maximum retries exceeded.")
 
         self.update_context(response.context, retry_settings)
         return response

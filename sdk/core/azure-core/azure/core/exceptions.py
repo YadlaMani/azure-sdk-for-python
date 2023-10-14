@@ -47,7 +47,7 @@ from typing_extensions import Protocol, runtime_checkable
 from gencore.exceptions import (
     SerializationError,
     DeserializationError,
-    ServiceError as AzureError,
+    BaseError as AzureError,
 )
 
 _LOGGER = logging.getLogger(__name__)

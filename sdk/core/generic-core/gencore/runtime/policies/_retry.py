@@ -33,7 +33,7 @@ from enum import Enum
 from ...transport import HttpTransport
 from ...rest import HttpResponse, AsyncHttpResponse, HttpRequest
 from ...exceptions import (
-    ServiceError,
+    BaseError,
     ClientAuthenticationError,
     ServiceResponseError,
     ServiceRequestError,
@@ -152,7 +152,7 @@ class RetryPolicyBase:
         request, so it should be safe to retry.
 
         :param err: The error raised by the pipeline.
-        :type err: ~gencore.exceptions.ServiceError
+        :type err: ~gencore.exceptions.BaseError
         :return: True if connection error, False if not.
         :rtype: bool
         """
@@ -163,7 +163,7 @@ class RetryPolicyBase:
         assume that the server began processing it.
 
         :param err: The error raised by the pipeline.
-        :type err: ~gencore.exceptions.ServiceError
+        :type err: ~gencore.exceptions.BaseError
         :return: True if read error, False if not.
         :rtype: bool
         """
@@ -258,7 +258,7 @@ class RetryPolicyBase:
         :type response: ~gencore.runtime.pipeline.PipelineResponse
         :param error: An error encountered during the request, or
          None if the response was received successfully.
-        :type error: ~gencore.exceptions.ServiceError
+        :type error: ~gencore.exceptions.BaseError
         :return: Whether any retry attempt is available
          True if more retry attempts available, False otherwise
         :rtype: bool
@@ -484,7 +484,7 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HttpRequest, HttpResponse]):
         :type request: ~gencore.runtime.pipeline.PipelineRequest
         :return: Returns the PipelineResponse or raises error if maximum retries exceeded.
         :rtype: ~gencore.runtime.pipeline.PipelineResponse
-        :raises: ~gencore.exceptions.ServiceError if maximum retries exceeded.
+        :raises: ~gencore.exceptions.BaseError if maximum retries exceeded.
         :raises: ~gencore.exceptions.ClientAuthenticationError if authentication
         """
         retry_active = True
@@ -518,7 +518,7 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HttpRequest, HttpResponse]):
                 # the authentication policy failed such that the client's request can't
                 # succeed--we'll never have a response to it, so propagate the exception
                 raise
-            except ServiceError as err:
+            except BaseError as err:
                 if absolute_timeout > 0 and self._is_method_retryable(retry_settings, request.http_request):
                     retry_active = self.increment(retry_settings, response=request, error=err)
                     if retry_active:
@@ -534,7 +534,7 @@ class RetryPolicy(RetryPolicyBase, HTTPPolicy[HttpRequest, HttpResponse]):
                 if absolute_timeout:
                     absolute_timeout -= end_time - start_time
         if not response:
-            raise ServiceError("Maximum retries exceeded.")
+            raise BaseError("Maximum retries exceeded.")
 
         self.update_context(response.context, retry_settings)
         return response

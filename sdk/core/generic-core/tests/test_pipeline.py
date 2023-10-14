@@ -49,7 +49,7 @@ from gencore.transport import HttpTransport
 from gencore.transport.requests import RequestsTransport
 from utils import HTTP_REQUESTS
 
-from gencore.exceptions import ServiceError
+from gencore.exceptions import BaseError
 
 
 @pytest.mark.parametrize("http_request", HTTP_REQUESTS)
@@ -89,9 +89,9 @@ def test_requests_socket_timeout(http_request):
     request = http_request("GET", "https://bing.com")
     policies = [UserAgentPolicy("myusergant")]
     # Sometimes this will raise a read timeout, sometimes a socket timeout depending on timing.
-    # Either way, the error should always be wrapped as an ServiceError to ensure it's caught
+    # Either way, the error should always be wrapped as an BaseError to ensure it's caught
     # by the retry policy.
-    with pytest.raises(ServiceError):
+    with pytest.raises(BaseError):
         with Pipeline(RequestsTransport(), policies=policies) as pipeline:
             response = pipeline.run(request, connection_timeout=0.000001, read_timeout=0.000001)
 
@@ -263,38 +263,38 @@ def test_repr(http_request):
 def test_add_custom_policy():
     class BooPolicy(HTTPPolicy):
         def send(*args):
-            raise ServiceError("boo")
+            raise BaseError("boo")
 
     class FooPolicy(HTTPPolicy):
         def send(*args):
-            raise ServiceError("boo")
+            raise BaseError("boo")
 
     retry_policy = RetryPolicy()
     boo_policy = BooPolicy()
     foo_policy = FooPolicy()
     client = PipelineClient(base_url="test", retry_policy=retry_policy, per_call_policies=boo_policy)
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
     client = PipelineClient(base_url="test", retry_policy=retry_policy, per_call_policies=[boo_policy])
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
     client = PipelineClient(base_url="test", retry_policy=retry_policy, per_retry_policies=boo_policy)
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo > pos_retry
 
     client = PipelineClient(base_url="test", retry_policy=retry_policy, per_retry_policies=[boo_policy])
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
@@ -303,7 +303,7 @@ def test_add_custom_policy():
     client = PipelineClient(
         base_url="test", retry_policy=retry_policy, per_call_policies=boo_policy, per_retry_policies=foo_policy
     )
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     assert foo_policy in policies
     pos_boo = policies.index(boo_policy)
@@ -315,7 +315,7 @@ def test_add_custom_policy():
     client = PipelineClient(
         base_url="test", retry_policy=retry_policy, per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
     )
-    policies = client._pipeline._impl_policies
+    policies = client.pipeline._impl_policies
     assert boo_policy in policies
     assert foo_policy in policies
     pos_boo = policies.index(boo_policy)
@@ -326,29 +326,29 @@ def test_add_custom_policy():
 
     policies = [UserAgentPolicy(), RetryPolicy()]
     client = PipelineClient(base_url="test", policies=policies, per_call_policies=boo_policy)
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
     client = PipelineClient(base_url="test", policies=policies, per_call_policies=[boo_policy])
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
 
     client = PipelineClient(base_url="test", policies=policies, per_retry_policies=foo_policy)
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert foo_policy == actual_policies[2]
     client = PipelineClient(base_url="test", policies=policies, per_retry_policies=[foo_policy])
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert foo_policy == actual_policies[2]
 
     client = PipelineClient(
         base_url="test", policies=policies, per_call_policies=boo_policy, per_retry_policies=foo_policy
     )
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
     assert foo_policy == actual_policies[3]
     client = PipelineClient(
         base_url="test", policies=policies, per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
     )
-    actual_policies = client._pipeline._impl_policies
+    actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
     assert foo_policy == actual_policies[3]
 

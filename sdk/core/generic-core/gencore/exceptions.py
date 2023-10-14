@@ -45,7 +45,7 @@ ValueType = TypeVar("ValueType")
 
 
 __all__ = [
-    "ServiceError",
+    "BaseError",
     "ServiceRequestError",
     "ServiceResponseError",
     "HttpResponseError",
@@ -124,7 +124,7 @@ def map_error(
     raise error
 
 
-class ServiceError(Exception):
+class BaseError(Exception):
     """Base exception for all errors.
 
     :param object message: The message object stringified as 'message' attribute
@@ -154,16 +154,16 @@ class ServiceError(Exception):
         self.exc_msg: str = "{}, {}: {}".format(message, self.exc_type.__name__, self.exc_value)
         self.message: str = str(message)
         self.continuation_token: Optional[str] = kwargs.get("continuation_token")
-        super(ServiceError, self).__init__(self.message, *args)
+        super(BaseError, self).__init__(self.message, *args)
 
 
-class ServiceRequestError(ServiceError):
+class ServiceRequestError(BaseError):
     """An error occurred while attempt to make a request to the service.
     No request was sent.
     """
 
 
-class ServiceResponseError(ServiceError):
+class ServiceResponseError(BaseError):
     """The request was sent, but the client failed to understand the response.
     The connection may have timed out. These errors can be retried for idempotent or
     safe operations"""
@@ -177,7 +177,7 @@ class ServiceResponseTimeoutError(ServiceResponseError):
     """Error raised when timeout happens"""
 
 
-class HttpResponseError(ServiceError):
+class HttpResponseError(BaseError):
     """A request was made, and a non-success status code was received from the service.
 
     :param object message: The message object stringified as 'message' attribute
@@ -253,7 +253,7 @@ class ResourceNotModifiedError(HttpResponseError):
     This will not be raised directly by the core pipeline."""
 
 
-class StreamConsumedError(ServiceError):
+class StreamConsumedError(BaseError):
     """Error thrown if you try to access the stream of a response once consumed.
 
     It is thrown if you try to read / stream an ~gencore.rest.HttpResponse or
@@ -271,7 +271,7 @@ class StreamConsumedError(ServiceError):
         super(StreamConsumedError, self).__init__(message)
 
 
-class StreamClosedError(ServiceError):
+class StreamClosedError(BaseError):
     """Error thrown if you try to access the stream of a response once closed.
 
     It is thrown if you try to read / stream an ~gencore.rest.HttpResponse or
@@ -289,7 +289,7 @@ class StreamClosedError(ServiceError):
         super(StreamClosedError, self).__init__(message)
 
 
-class ResponseNotReadError(ServiceError):
+class ResponseNotReadError(BaseError):
     """Error thrown if you try to access a response's content without reading first.
 
     It is thrown if you try to access an ~gencore.rest.HttpResponse or
