@@ -1,7 +1,0 @@
-recursive-include tests *.py
-include *.md
-include LICENSE
-include gencore/__init__.py
-recursive-include samples *.py *.md
-recursive-include doc *.rst
-include gencore/py.typed

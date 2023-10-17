@@ -35,8 +35,8 @@ extends:
   template: ../../eng/pipelines/templates/stages/archetype-sdk-client.yml
   parameters:
     ServiceDirectory: core
-    BuildTargetingString: generic-core
+    BuildTargetingString: corehttp
     ValidateFormatting: true
     Artifacts:
-    - name: generic-core
-      safeName: generic-core
+    - name: corehttp
+      safeName: corehttp

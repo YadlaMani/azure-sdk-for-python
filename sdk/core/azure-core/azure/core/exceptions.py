@@ -44,7 +44,7 @@ from typing import (
 )
 from typing_extensions import Protocol, runtime_checkable
 
-from gencore.exceptions import (
+from corehttp.exceptions import (
     SerializationError,
     DeserializationError,
     BaseError as AzureError,

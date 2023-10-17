@@ -12,8 +12,8 @@ from io import open
 from setuptools import find_packages, setup  # type: ignore
 
 # Change the PACKAGE_NAME only to change folder and different name
-PACKAGE_NAME = "azure-core"
-PACKAGE_PPRINT_NAME = "Core"
+PACKAGE_NAME = "corehttp"
+PACKAGE_PPRINT_NAME = "CoreHTTP"
 
 # a-b-c => a/b/c
 package_folder_path = PACKAGE_NAME.replace("-", "/")
@@ -36,20 +36,19 @@ setup(
     name=PACKAGE_NAME,
     version=version,
     include_package_data=True,
-    description="Microsoft Azure {} Library for Python".format(PACKAGE_PPRINT_NAME),
+    description="{} Library for Python".format(PACKAGE_PPRINT_NAME),
     long_description=readme + "\n\n" + changelog,
     long_description_content_type="text/markdown",
     license="MIT License",
     author="Microsoft Corporation",
     author_email="azpysdkhelp@microsoft.com",
-    url="https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/core/azure-core",
-    keywords="azure, azure sdk",
+    url="https://github.com/Azure/azure-sdk-for-python/tree/main/sdk/core/corehttp",
+    keywords="typespec, core",
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3 :: Only",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
@@ -60,21 +59,16 @@ setup(
     packages=find_packages(
         exclude=[
             "tests",
-            # Exclude packages that will be covered by PEP420 or nspkg
-            "azure",
         ]
     ),
     package_data={
         "pytyped": ["py.typed"],
     },
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     install_requires=[
         "requests>=2.18.4",
         "six>=1.11.0",
         "typing-extensions>=4.6.0",
-
-        # Generic core package. Github URL is temporary until we release the package.
-        # "corehttp @ git+https://github.com/Azure/azure-sdk-for-python.git@feature/generic-core#subdirectory=sdk/core/corehttp"
     ],
     extras_require={
         "aio": [

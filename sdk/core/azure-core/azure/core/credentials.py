@@ -7,7 +7,7 @@ from collections import namedtuple
 from typing import Any, Optional
 from typing_extensions import Protocol, runtime_checkable
 
-from gencore.credentials import AccessToken
+from corehttp.credentials import AccessToken
 
 
 @runtime_checkable

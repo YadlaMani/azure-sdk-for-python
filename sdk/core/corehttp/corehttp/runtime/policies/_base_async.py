@@ -23,30 +23,38 @@
 # IN THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
-from typing import TypeVar, Iterator
+from __future__ import annotations
+import abc
 
-from corehttp.paging import ItemPaged, PageIterator as GenericPageIterator
+from typing import Generic, TypeVar, TYPE_CHECKING
 
-from .exceptions import AzureError
+if TYPE_CHECKING:
+    from ...runtime.pipeline import PipelineRequest, PipelineResponse
 
-ReturnType = TypeVar("ReturnType")
+AsyncHTTPResponseType = TypeVar("AsyncHTTPResponseType")
+HTTPResponseType = TypeVar("HTTPResponseType")
+HTTPRequestType = TypeVar("HTTPRequestType")
 
-__all__ = ["ItemPaged", "PageIterator"]
 
+class AsyncHTTPPolicy(abc.ABC, Generic[HTTPRequestType, AsyncHTTPResponseType]):
+    """An async HTTP policy ABC.
 
-class PageIterator(GenericPageIterator):
-    def __next__(self) -> Iterator[ReturnType]:
-        if self.continuation_token is None and self._did_a_call_already:
-            raise StopIteration("End of paging")
-        try:
-            self._response = self._get_next(self.continuation_token)
-        except AzureError as error:
-            if not error.continuation_token:
-                error.continuation_token = self.continuation_token
-            raise
+    Use with an asynchronous pipeline.
+    """
 
-        self._did_a_call_already = True
+    next: "AsyncHTTPPolicy[HTTPRequestType, AsyncHTTPResponseType]"
+    """Pointer to the next policy or a transport (wrapped as a policy). Will be set at pipeline creation."""
 
-        self.continuation_token, self._current_page = self._extract_data(self._response)
+    @abc.abstractmethod
+    async def send(
+        self, request: PipelineRequest[HTTPRequestType]
+    ) -> PipelineResponse[HTTPRequestType, AsyncHTTPResponseType]:
+        """Abstract send method for a asynchronous pipeline. Mutates the request.
 
-        return iter(self._current_page)
+        Context content is dependent on the HttpTransport.
+
+        :param request: The pipeline request object.
+        :type request: ~corehttp.runtime.pipeline.PipelineRequest
+        :return: The pipeline response object.
+        :rtype: ~corehttp.runtime.pipeline.PipelineResponse
+        """
