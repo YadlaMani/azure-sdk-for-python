@@ -4,48 +4,50 @@
 # license information.
 # -------------------------------------------------------------------------
 import pytest
-from corehttp.rest import HttpRequest
 from corehttp.exceptions import ResponseNotReadError
+from corehttp.rest import HttpRequest
 
 
-def test_normal_call(client, port):
-    def _raise_and_get_text(response):
+@pytest.mark.asyncio
+async def test_normal_call(client):
+    async def _raise_and_get_text(response):
         response.raise_for_status()
         assert response.text() == "Hello, world!"
         assert response.is_closed
 
     request = HttpRequest("GET", url="/basic/string")
-    response = client.send_request(request)
-    _raise_and_get_text(response)
+    response = await client.send_request(request)
+    await _raise_and_get_text(response)
     assert response.is_closed
 
-    with client.send_request(request) as response:
-        _raise_and_get_text(response)
+    async with client.send_request(request) as response:
+        await _raise_and_get_text(response)
 
     response = client.send_request(request)
-    with response as response:
-        _raise_and_get_text(response)
+    async with response as response:
+        await _raise_and_get_text(response)
 
 
-def test_stream_call(client):
-    def _raise_and_get_text(response):
+@pytest.mark.asyncio
+async def test_stream_call(client):
+    async def _raise_and_get_text(response):
         response.raise_for_status()
         assert not response.is_closed
         with pytest.raises(ResponseNotReadError):
             response.text()
-        response.read()
+        await response.read()
         assert response.text() == "Hello, world!"
         assert response.is_closed
 
     request = HttpRequest("GET", url="/streams/basic")
-    response = client.send_request(request, stream=True)
-    _raise_and_get_text(response)
+    response = await client.send_request(request, stream=True)
+    await _raise_and_get_text(response)
     assert response.is_closed
 
-    with client.send_request(request, stream=True) as response:
-        _raise_and_get_text(response)
+    async with client.send_request(request, stream=True) as response:
+        await _raise_and_get_text(response)
     assert response.is_closed
 
     response = client.send_request(request, stream=True)
-    with response as response:
-        _raise_and_get_text(response)
+    async with response as response:
+        await _raise_and_get_text(response)

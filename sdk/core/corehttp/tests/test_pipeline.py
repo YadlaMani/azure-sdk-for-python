@@ -1,28 +1,8 @@
-﻿# --------------------------------------------------------------------------
-#
+﻿# -------------------------------------------------------------------------
 # Copyright (c) Microsoft Corporation. All rights reserved.
-#
-# The MIT License (MIT)
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the ""Software""), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
-#
-# --------------------------------------------------------------------------
+# Licensed under the MIT License. See LICENSE.txt in the project root for
+# license information.
+# -------------------------------------------------------------------------
 
 import json
 import requests
@@ -272,28 +252,28 @@ def test_add_custom_policy():
     retry_policy = RetryPolicy()
     boo_policy = BooPolicy()
     foo_policy = FooPolicy()
-    client = PipelineClient(base_url="test", retry_policy=retry_policy, per_call_policies=boo_policy)
+    client = PipelineClient(base_url="test", policies=[retry_policy], per_call_policies=boo_policy)
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
-    client = PipelineClient(base_url="test", retry_policy=retry_policy, per_call_policies=[boo_policy])
+    client = PipelineClient(base_url="test", policies=[retry_policy], per_call_policies=[boo_policy])
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
-    client = PipelineClient(base_url="test", retry_policy=retry_policy, per_retry_policies=boo_policy)
+    client = PipelineClient(base_url="test", policies=[retry_policy], per_retry_policies=boo_policy)
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo > pos_retry
 
-    client = PipelineClient(base_url="test", retry_policy=retry_policy, per_retry_policies=[boo_policy])
+    client = PipelineClient(base_url="test", policies=[retry_policy], per_retry_policies=[boo_policy])
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
@@ -301,7 +281,7 @@ def test_add_custom_policy():
     assert pos_boo > pos_retry
 
     client = PipelineClient(
-        base_url="test", retry_policy=retry_policy, per_call_policies=boo_policy, per_retry_policies=foo_policy
+        base_url="test", policies=[retry_policy], per_call_policies=boo_policy, per_retry_policies=foo_policy
     )
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
@@ -313,7 +293,7 @@ def test_add_custom_policy():
     assert pos_foo > pos_retry
 
     client = PipelineClient(
-        base_url="test", retry_policy=retry_policy, per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
+        base_url="test", policies=[retry_policy], per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
     )
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
