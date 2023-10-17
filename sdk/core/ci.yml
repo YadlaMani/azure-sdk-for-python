@@ -35,8 +35,20 @@ extends:
   template: ../../eng/pipelines/templates/stages/archetype-sdk-client.yml
   parameters:
     ServiceDirectory: core
-    BuildTargetingString: corehttp
     ValidateFormatting: true
     Artifacts:
+    - name: azure-core
+      safeName: azurecore
+    - name: azure-mgmt-core
+      safeName: azuremgmtcore
+    - name: azure-core-tracing-opencensus
+      safeName: azurecorecoretracingopencensus
+    - name: azure-core-tracing-opentelemetry
+      safeName: azurecorecoretracingtelemetry
+    - name: azure-common
+      safeName: azurecommon
+      skipPublishDocMs: true
+    - name: azure-core-experimental
+      safeName: azurecoreexperimental
     - name: corehttp
       safeName: corehttp
