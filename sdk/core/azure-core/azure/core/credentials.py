@@ -4,10 +4,19 @@
 # license information.
 # -------------------------------------------------------------------------
 from collections import namedtuple
-from typing import Any, Optional
+from typing import Any, NamedTuple, Optional
 from typing_extensions import Protocol, runtime_checkable
 
-from corehttp.credentials import AccessToken
+
+class AccessToken(NamedTuple):
+    """Represents an OAuth access token."""
+
+    token: str
+    expires_on: int
+
+
+AccessToken.token.__doc__ = """The token string."""
+AccessToken.expires_on.__doc__ = """The token's expiration time in Unix time."""
 
 
 @runtime_checkable

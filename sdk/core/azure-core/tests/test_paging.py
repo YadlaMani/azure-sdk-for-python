@@ -23,7 +23,6 @@
 # THE SOFTWARE.
 #
 # --------------------------------------------------------------------------
-import re
 
 from azure.core.paging import ItemPaged
 from azure.core.exceptions import HttpResponseError
@@ -114,7 +113,7 @@ class TestPaging(object):
 
         pager = ItemPaged(get_next, extract_data)
         output = repr(pager)
-        assert re.match("<iterator object .*\.ItemPaged at", output)
+        assert output.startswith("<iterator object azure.core.paging.ItemPaged at")
 
     def test_paging_continue_on_error(self):
         def get_next(continuation_token=None):

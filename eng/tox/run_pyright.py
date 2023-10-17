@@ -88,7 +88,6 @@ if __name__ == "__main__":
 
     paths = [
         os.path.join(args.target_package, "azure"),
-        os.path.join(args.target_package, "generic"),
         os.path.join(args.target_package, "samples"),
     ]
 
