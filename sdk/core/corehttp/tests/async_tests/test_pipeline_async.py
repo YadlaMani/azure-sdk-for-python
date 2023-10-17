@@ -45,15 +45,6 @@ async def test_sans_io_exception(http_request):
     with pytest.raises(ValueError):
         await pipeline.run(req)
 
-    class SwapExec(SansIOHTTPPolicy):
-        def on_exception(self, requests, **kwargs):
-            exc_type, exc_value, exc_traceback = sys.exc_info()
-            raise NotImplementedError(exc_value)
-
-    pipeline = AsyncPipeline(BrokenSender(), [SwapExec()])
-    with pytest.raises(NotImplementedError):
-        await pipeline.run(req)
-
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize("http_request", HTTP_REQUESTS)
@@ -113,28 +104,28 @@ async def test_add_custom_policy():
     retry_policy = AsyncRetryPolicy()
     boo_policy = BooPolicy()
     foo_policy = FooPolicy()
-    client = AsyncPipelineClient(base_url="test", policies=[retry_policy], per_call_policies=boo_policy)
+    client = AsyncPipelineClient(endpoint="test", policies=[retry_policy], per_call_policies=boo_policy)
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
-    client = AsyncPipelineClient(base_url="test", policies=[retry_policy], per_call_policies=[boo_policy])
+    client = AsyncPipelineClient(endpoint="test", policies=[retry_policy], per_call_policies=[boo_policy])
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo < pos_retry
 
-    client = AsyncPipelineClient(base_url="test", policies=[retry_policy], per_retry_policies=boo_policy)
+    client = AsyncPipelineClient(endpoint="test", policies=[retry_policy], per_retry_policies=boo_policy)
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
     pos_retry = policies.index(retry_policy)
     assert pos_boo > pos_retry
 
-    client = AsyncPipelineClient(base_url="test", policies=[retry_policy], per_retry_policies=[boo_policy])
+    client = AsyncPipelineClient(endpoint="test", policies=[retry_policy], per_retry_policies=[boo_policy])
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
     pos_boo = policies.index(boo_policy)
@@ -142,7 +133,7 @@ async def test_add_custom_policy():
     assert pos_boo > pos_retry
 
     client = AsyncPipelineClient(
-        base_url="test", policies=[retry_policy], per_call_policies=boo_policy, per_retry_policies=foo_policy
+        endpoint="test", policies=[retry_policy], per_call_policies=boo_policy, per_retry_policies=foo_policy
     )
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
@@ -154,7 +145,7 @@ async def test_add_custom_policy():
     assert pos_foo > pos_retry
 
     client = AsyncPipelineClient(
-        base_url="test", policies=[retry_policy], per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
+        endpoint="test", policies=[retry_policy], per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
     )
     policies = client.pipeline._impl_policies
     assert boo_policy in policies
@@ -166,28 +157,28 @@ async def test_add_custom_policy():
     assert pos_foo > pos_retry
 
     policies = [UserAgentPolicy(), AsyncRetryPolicy()]
-    client = AsyncPipelineClient(base_url="test", policies=policies, per_call_policies=boo_policy)
+    client = AsyncPipelineClient(endpoint="test", policies=policies, per_call_policies=boo_policy)
     actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
-    client = AsyncPipelineClient(base_url="test", policies=policies, per_call_policies=[boo_policy])
+    client = AsyncPipelineClient(endpoint="test", policies=policies, per_call_policies=[boo_policy])
     actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
 
-    client = AsyncPipelineClient(base_url="test", policies=policies, per_retry_policies=foo_policy)
+    client = AsyncPipelineClient(endpoint="test", policies=policies, per_retry_policies=foo_policy)
     actual_policies = client.pipeline._impl_policies
     assert foo_policy == actual_policies[2]
-    client = AsyncPipelineClient(base_url="test", policies=policies, per_retry_policies=[foo_policy])
+    client = AsyncPipelineClient(endpoint="test", policies=policies, per_retry_policies=[foo_policy])
     actual_policies = client.pipeline._impl_policies
     assert foo_policy == actual_policies[2]
 
     client = AsyncPipelineClient(
-        base_url="test", policies=policies, per_call_policies=boo_policy, per_retry_policies=[foo_policy]
+        endpoint="test", policies=policies, per_call_policies=boo_policy, per_retry_policies=[foo_policy]
     )
     actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
     assert foo_policy == actual_policies[3]
     client = AsyncPipelineClient(
-        base_url="test", policies=policies, per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
+        endpoint="test", policies=policies, per_call_policies=[boo_policy], per_retry_policies=[foo_policy]
     )
     actual_policies = client.pipeline._impl_policies
     assert boo_policy == actual_policies[0]
@@ -195,6 +186,6 @@ async def test_add_custom_policy():
 
     policies = [UserAgentPolicy()]
     with pytest.raises(ValueError):
-        client = AsyncPipelineClient(base_url="test", policies=policies, per_retry_policies=foo_policy)
+        client = AsyncPipelineClient(endpoint="test", policies=policies, per_retry_policies=foo_policy)
     with pytest.raises(ValueError):
-        client = AsyncPipelineClient(base_url="test", policies=policies, per_retry_policies=[foo_policy])
+        client = AsyncPipelineClient(endpoint="test", policies=policies, per_retry_policies=[foo_policy])

@@ -10,7 +10,7 @@ from copy import deepcopy
 class TestRestClient(object):
     def __init__(self, port, **kwargs):
         kwargs.setdefault("sdk_moniker", "corehttp/1.0.0b1")
-        self._client = PipelineClient(base_url="http://localhost:{}/".format(port), **kwargs)
+        self._client = PipelineClient(endpoint="http://localhost:{}/".format(port), **kwargs)
 
     def send_request(self, request, **kwargs):
         """Runs the network request through the client's chained policies.

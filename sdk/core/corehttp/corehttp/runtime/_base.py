@@ -88,11 +88,11 @@ def _urljoin(base_url: str, stub_url: str) -> str:
 class PipelineClientBase:
     """Base class for pipeline clients.
 
-    :param str base_url: URL for the request.
+    :param str endpoint: URL for the request.
     """
 
-    def __init__(self, base_url: str):
-        self._base_url = base_url
+    def __init__(self, endpoint: str):
+        self._endpoint = endpoint
 
     def format_url(self, url_template: str, **kwargs: Any) -> str:
         """Format request URL with the client base URL, unless the
@@ -110,12 +110,12 @@ class PipelineClientBase:
             if not parsed.scheme or not parsed.netloc:
                 url = url.lstrip("/")
                 try:
-                    base = self._base_url.format(**kwargs).rstrip("/")
+                    base = self._endpoint.format(**kwargs).rstrip("/")
                 except KeyError as key:
                     err_msg = "The value provided for the url part {} was incorrect, and resulted in an invalid url"
                     raise ValueError(err_msg.format(key.args[0])) from key
 
                 url = _urljoin(base, url)
         else:
-            url = self._base_url.format(**kwargs)
+            url = self._endpoint.format(**kwargs)
         return url

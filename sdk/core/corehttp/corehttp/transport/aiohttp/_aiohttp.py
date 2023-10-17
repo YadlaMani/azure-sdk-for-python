@@ -64,12 +64,7 @@ class AioHttpTransport(AsyncHttpTransport):
     :keyword bool use_env_settings: Uses proxy settings from environment. Defaults to True.
     """
 
-    def __init__(
-        self, *, session: Optional[aiohttp.ClientSession] = None, loop=None, session_owner: bool = True, **kwargs
-    ):
-        if loop and sys.version_info >= (3, 10):
-            raise ValueError("Starting with Python 3.10, asyncio doesn’t support loop as a parameter anymore")
-        self._loop = loop
+    def __init__(self, *, session: Optional[aiohttp.ClientSession] = None, session_owner: bool = True, **kwargs):
         self._session_owner = session_owner
         self.session = session
         if not self._session_owner and not self.session:
@@ -98,8 +93,6 @@ class AioHttpTransport(AsyncHttpTransport):
                 "cookie_jar": jar,
                 "auto_decompress": False,
             }
-            if self._loop is not None:
-                clientsession_kwargs["loop"] = self._loop
             self.session = aiohttp.ClientSession(**clientsession_kwargs)
         # pyright has trouble to understand that self.session is not None, since we raised at worst in the init
         self.session = cast(aiohttp.ClientSession, self.session)

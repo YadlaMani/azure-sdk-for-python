@@ -64,13 +64,8 @@ class _SansIOHTTPPolicyRunner(HTTPPolicy[HTTPRequestType, HTTPResponseType]):
         :rtype: ~corehttp.runtime.pipeline.PipelineResponse
         """
         _await_result(self._policy.on_request, request)
-        try:
-            response = self.next.send(request)
-        except Exception:  # pylint: disable=broad-except
-            _await_result(self._policy.on_exception, request)
-            raise
-        else:
-            _await_result(self._policy.on_response, request, response)
+        response = self.next.send(request)
+        _await_result(self._policy.on_response, request, response)
         return response
 
 

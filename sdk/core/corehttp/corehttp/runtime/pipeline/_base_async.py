@@ -63,14 +63,8 @@ class _SansIOAsyncHTTPPolicyRunner(
         :rtype: ~corehttp.runtime.pipeline.PipelineResponse
         """
         await _await_result(self._policy.on_request, request)
-        response: PipelineResponse[HTTPRequestType, AsyncHTTPResponseType]
-        try:
-            response = await self.next.send(request)
-        except Exception:  # pylint: disable=broad-except
-            await _await_result(self._policy.on_exception, request)
-            raise
-        else:
-            await _await_result(self._policy.on_response, request, response)
+        response: PipelineResponse[HTTPRequestType, AsyncHTTPResponseType] = await self.next.send(request)
+        await _await_result(self._policy.on_response, request, response)
         return response
 
 

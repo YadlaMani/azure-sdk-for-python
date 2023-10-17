@@ -51,7 +51,7 @@ class PipelineClient(PipelineClientBase, Generic[HTTPRequestType, HTTPResponseTy
 
     Builds a Pipeline client.
 
-    :param str base_url: URL for the request.
+    :param str endpoint: URL for the request.
     :keyword Pipeline pipeline: If omitted, a Pipeline object is created.
     :keyword list[HTTPPolicy] policies: If omitted, a set of standard policies is used.
     :keyword per_call_policies: If specified, the policies will be added into the policy list before RetryPolicy
@@ -66,14 +66,12 @@ class PipelineClient(PipelineClientBase, Generic[HTTPRequestType, HTTPResponseTy
 
     def __init__(
         self,
-        base_url: str,
+        endpoint: str,
         *,
         pipeline: Optional[Pipeline[HTTPRequestType, HTTPResponseType]] = None,
         **kwargs: Any,
     ) -> None:
-        super(PipelineClient, self).__init__(base_url)
-        self._base_url = base_url
-
+        super().__init__(endpoint)
         self.pipeline = pipeline or self._build_pipeline(**kwargs)
 
     def __enter__(self) -> PipelineClient[HTTPRequestType, HTTPResponseType]:

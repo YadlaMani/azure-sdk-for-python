@@ -93,19 +93,6 @@ class SansIOHTTPPolicy(Generic[HTTPRequestType, HTTPResponseType]):
         :type response: ~corehttp.runtime.pipeline.PipelineResponse
         """
 
-    def on_exception(
-        self,
-        request: PipelineRequest[HTTPRequestType],  # pylint: disable=unused-argument
-    ) -> None:
-        """Is executed if an exception is raised while executing the next policy.
-
-        This method is executed inside the exception handler.
-
-        :param request: The Pipeline request object
-        :type request: ~corehttp.runtime.pipeline.PipelineRequest
-        """
-        return
-
 
 class RequestHistory(Generic[HTTPRequestType, HTTPResponseType]):
     """A container for an attempted request and the applicable response.
